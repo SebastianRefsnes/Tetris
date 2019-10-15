@@ -3,6 +3,7 @@ class Tetromino{
   constructor(){
     this.type = "s";
     this.color = "red";
+    this.colorCode = 0;
     this.descend = 1;
     this.size = 10;
     this.focus = true;
@@ -80,6 +81,30 @@ class Tetromino{
           break;
     }
 
+    switch(this.color){
+      case "cyan":
+          this.colorCode = 1;
+        break;
+      case "yellow":
+          this.colorCode = 2;
+        break;
+      case "purple":
+          this.colorCode = 3;
+        break;
+      case "blue":
+          this.colorCode = 4;
+        break;
+      case "orange"
+          this.colorCode = 5;
+        break;
+      case "green"
+          this.colorCode = 6;
+        break;
+      case "red":
+          this.colorCode = 7;
+      break;
+    }
+
     self = this;
 
   }
@@ -122,7 +147,7 @@ class Tetromino{
         let reverse = false;
         gridMemory.forEach((grd,i) => {
           grd.forEach((innerGrd, j) => {
-            if(this.memory[i][j+1] === 1 && gridMemory[i][j] === 1){
+            if(this.memory[i][j+1] !== 0 && gridMemory[i][j] !== 0){
               reverse = true;
             }
           });
@@ -140,7 +165,7 @@ class Tetromino{
           let reverse = false;
           gridMemory.forEach((grd,i) => {
             grd.forEach((innerGrd, j) => {
-              if(this.memory[i][j-1] === 1 && gridMemory[i][j] === 1){
+              if(this.memory[i][j-1] !== 0 && gridMemory[i][j] !== 0){
                 reverse = true;
               }
             });
@@ -171,13 +196,13 @@ class Tetromino{
   //Looping through shape
   for(let i = 0; i < this.shape.length; i++){
   //Left side
-  if(this.shape[i][0]===1){
+  if(this.shape[i][0]===this.colorCode){
     //console.log((this.y/blockSize.y)+i, this.x/blockSize.x);
-    this.memory[(this.y/blockSize.y)+i][this.x/blockSize.x] = 1;
+    this.memory[(this.y/blockSize.y)+i][this.x/blockSize.x] = this.colorCode;
   }
   //Right side
-  if(this.shape[i][1]===1){
-    this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+1] = 1;
+  if(this.shape[i][1]===this.colorCode){
+    this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+1] = this.colorCode;
   }
 }
 }
@@ -208,7 +233,7 @@ class Tetromino{
         gridMemory.forEach((grd,i) => {
           grd.forEach((innerGrd, j) => {
             let c = i;
-            if(this.memory[i][j] === 1 && gridMemory[i][j] === 1){
+            if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
               reverse = true;
             }
           });
@@ -224,7 +249,7 @@ class Tetromino{
     if(!this.focus){
       this.memory.forEach((tetMem, i) => {
         for(let v = 0; v < 10; v++){
-          if(this.memory[i][v] === 1){
+          if(this.memory[i][v] !== 0){
             gridMemory[i][v] = 1;
           }
         }
@@ -244,6 +269,7 @@ class Tetromino{
   removeLines(){
     let lines = [];
     let inLine = [];
+    //THIS IS WRONG WITH COLORCODES, Need to use .every somehow
     gridMemory.forEach((grd, i) => {
       if(JSON.stringify(gridMemory[i])===JSON.stringify([1,1,1,1,1,1,1,1,1,1,0]) && i <= 19){
         lines.push(i);
@@ -276,6 +302,7 @@ class Tetromino{
   }
 
   draw(){
+    //TODO Change this so I get the right colors
     ctx.fillStyle = this.color;
     ctx.strokeStyle = "white";
 
@@ -283,12 +310,12 @@ class Tetromino{
     let blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y}
     for(let i = 0; i < 4; i++){
 
-      if(this.shape[i][0]===1){
+      if(this.shape[i][0]!==0){
         ctx.fillRect(this.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
         ctx.strokeRect(this.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
 
       }
-       if(this.shape[i][1]===1){
+       if(this.shape[i][1]!==0){
         ctx.fillRect(this.x+blockSize.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
         ctx.strokeRect(this.x+blockSize.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
 
