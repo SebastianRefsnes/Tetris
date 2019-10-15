@@ -46,7 +46,7 @@ function game(){
 
   //Getting new tetromino if needed
   if(tetromino.focus === false){
-    stored.push(tetromino);
+    stored.push("tetromino");
     lastTetromino = tetromino;
     tetromino = new Tetromino();
   }
