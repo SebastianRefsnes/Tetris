@@ -16,7 +16,7 @@ class Tetromino{
 
     this.randomType();
 
-    for(let i = 0; i < grid.y+4; i++){
+    for(let i = 0; i < grid.y; i++){
         this.memory[i] =[0,0,0,0,0,0,0,0,0,0,0];
     }
 
@@ -28,6 +28,7 @@ class Tetromino{
                       [1,0],
                       [1,0]];
         this.color = "cyan";
+        this.colorCode = 1;
         this.height = 4;
         break;
       case "o":
@@ -38,6 +39,7 @@ class Tetromino{
 
       this.color = "yellow";
       this.height = 2;
+      this.colorCode = 2;
         break;
       case "t":
       this.shape = [[0,0],
@@ -46,6 +48,7 @@ class Tetromino{
                     [0,1]];
       this.color = "purple";
       this.height = 3;
+      this.colorCode = 3;
         break;
       case "j":
       this.shape = [[0,0],
@@ -54,6 +57,7 @@ class Tetromino{
                     [1,1]];
       this.color = "blue";
       this.height = 3;
+      this.colorCode = 4;
         break;
       case "l":
       this.shape = [[0,0],
@@ -62,6 +66,7 @@ class Tetromino{
                     [1,1]];
       this.color = "orange";
       this.height = 3;
+      this.colorCode = 5;
           break;
       case "s":
       this.shape = [[0,1],
@@ -70,6 +75,7 @@ class Tetromino{
                     [0,0]];
       this.color = "green";
       this.height = 3;
+      this.colorCode = 6;
           break;
       case "z":
       this.shape = [[1,0],
@@ -78,34 +84,9 @@ class Tetromino{
                     [0,0]];
       this.color = "red";
       this.height = 3;
+      this.colorCode = 7;
           break;
     }
-
-    switch(this.color){
-      case "cyan":
-          this.colorCode = 1;
-        break;
-      case "yellow":
-          this.colorCode = 2;
-        break;
-      case "purple":
-          this.colorCode = 3;
-        break;
-      case "blue":
-          this.colorCode = 4;
-        break;
-      case "orange"
-          this.colorCode = 5;
-        break;
-      case "green"
-          this.colorCode = 6;
-        break;
-      case "red":
-          this.colorCode = 7;
-      break;
-    }
-
-    self = this;
 
   }
 
@@ -140,6 +121,8 @@ class Tetromino{
     //Gravity end
 
     //Move tetromino along x axis
+    //LEFT
+    //THIS IS WRONG
     if(input.left && this.x != 0){
       if(now-this.start>50){
         this.x-=blockSize.x;
@@ -159,8 +142,10 @@ class Tetromino{
         this.start = new Date();
       }
     }
+    //RIGHT
+    //THIS IS WRONG
       if(input.right && this.x != (blockSize.x*grid.x)-blockSize.x*(tetromino.type === "i" ?  1 : 2)){
-        if(now-this.start>100){
+        if(now-this.start>50){
           this.x+=blockSize.x;
           let reverse = false;
           gridMemory.forEach((grd,i) => {
@@ -178,6 +163,7 @@ class Tetromino{
       }
         if(input.up){
           if(now-this.start>500){
+            console.log(input);
             this.y-=blockSize.y;
             this.start = new Date();
           }
@@ -190,18 +176,17 @@ class Tetromino{
   //Store new position values
 
   //Clear
-  for(let i = 0; i < (grid.y+4); i++){
+  for(let i = 0; i < (grid.y); i++){
       this.memory[i] =[0,0,0,0,0,0,0,0,0,0];
   }
   //Looping through shape
   for(let i = 0; i < this.shape.length; i++){
   //Left side
-  if(this.shape[i][0]===this.colorCode){
-    //console.log((this.y/blockSize.y)+i, this.x/blockSize.x);
+  if(this.shape[i][0]===1){
     this.memory[(this.y/blockSize.y)+i][this.x/blockSize.x] = this.colorCode;
   }
   //Right side
-  if(this.shape[i][1]===this.colorCode){
+  if(this.shape[i][1]===1){
     this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+1] = this.colorCode;
   }
 }
@@ -213,8 +198,6 @@ class Tetromino{
     let blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y};
 
     //Collision check
-    let leftSide = {start:0,end:0, edited:false};
-    let rightSide = {start:0,end:0, edited:false};
 
     this.shape.forEach((shape,i) => {
 
@@ -241,6 +224,7 @@ class Tetromino{
         if(reverse){
           this.focus = false;
           this.y -= blockSize.y
+          console.log("merge")
           this.storePosition();
         }
       }
@@ -250,21 +234,13 @@ class Tetromino{
       this.memory.forEach((tetMem, i) => {
         for(let v = 0; v < 10; v++){
           if(this.memory[i][v] !== 0){
-            gridMemory[i][v] = 1;
+            gridMemory[i][v] = this.colorCode;
           }
         }
       });
     }
   });
 }
-
-  swapGridElements(arr,a,b){
-    let tempA = a;
-    arr[a] = arr[b];
-    arr[b] = arr[tempA];
-
-  }
-
 
   removeLines(){
     let lines = [];
@@ -328,7 +304,7 @@ class Tetromino{
   randomType(){
    let result = '';
    let characters = 'iotjlsz';
-  characters = "o";
+  //characters = "o";
    let charLength = characters.length;
    for ( let i = 0; i < 1; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charLength));
