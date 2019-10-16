@@ -70,17 +70,18 @@ function game(){
   // }
 
   ctx.fillStyle = "white";
+  ctx.strokeStyle = "white";
   gridMemory.forEach((grd,i) => {
     grd.forEach((innerGrd,j) => {
       if(gridMemory[i][j] !== 0){
         ctx.fillStyle = getColor(gridMemory[i][j]);
         ctx.fillRect(j*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
-        //ctx.strokeRect(j*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
+        ctx.strokeRect(j*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
       }
     });
   });
 
-  //tetromino.removeLines();
+  tetromino.removeLines();
   tetromino.update();
   tetromino.merge();
   tetromino.draw();

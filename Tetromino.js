@@ -122,42 +122,43 @@ class Tetromino{
 
     //Move tetromino along x axis
     //LEFT
-    //THIS IS WRONG
     if(input.left && this.x != 0){
       if(now-this.start>50){
         this.x-=blockSize.x;
-
+        this.storePosition();
         let reverse = false;
         gridMemory.forEach((grd,i) => {
           grd.forEach((innerGrd, j) => {
-            if(this.memory[i][j+1] !== 0 && gridMemory[i][j] !== 0){
+            if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
               reverse = true;
             }
           });
         });
         if(reverse){
           this.x += blockSize.x;
+          reverse = false;
         }
-
         this.start = new Date();
       }
     }
     //RIGHT
-    //THIS IS WRONG
       if(input.right && this.x != (blockSize.x*grid.x)-blockSize.x*(tetromino.type === "i" ?  1 : 2)){
         if(now-this.start>50){
-          this.x+=blockSize.x;
           let reverse = false;
+          this.x+=blockSize.x;
+          this.storePosition();
           gridMemory.forEach((grd,i) => {
             grd.forEach((innerGrd, j) => {
-              if(this.memory[i][j-1] !== 0 && gridMemory[i][j] !== 0){
+              if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
                 reverse = true;
               }
             });
           });
           if(reverse){
             this.x -= blockSize.x;
+            reverse = false;
           }
+
           this.start = new Date();
         }
       }
@@ -194,8 +195,8 @@ class Tetromino{
 
   //Merge handles collision detection. Also removes focus if collision on y axis is detected.
   merge(){
-    if(!this.focus) return;
     let blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y};
+    this.storePosition();
 
     //Collision check
 
@@ -213,6 +214,7 @@ class Tetromino{
         //Catching all other collision cases.
         if(this.focus){
         let reverse = false;
+        this.storePosition();
         gridMemory.forEach((grd,i) => {
           grd.forEach((innerGrd, j) => {
             let c = i;
@@ -231,6 +233,7 @@ class Tetromino{
 
     //Finally, removing focus and storing memory to grid
     if(!this.focus){
+      this.storePosition();
       this.memory.forEach((tetMem, i) => {
         for(let v = 0; v < 10; v++){
           if(this.memory[i][v] !== 0){
@@ -244,12 +247,16 @@ class Tetromino{
 
   removeLines(){
     let lines = [];
-    let inLine = [];
     //THIS IS WRONG WITH COLORCODES, Need to use .every somehow
-    gridMemory.forEach((grd, i) => {
-      if(JSON.stringify(gridMemory[i])===JSON.stringify([1,1,1,1,1,1,1,1,1,1,0]) && i <= 19){
-        lines.push(i);
-      }
+    gridMemory.forEach((inner,i) => {
+      if(inner.every(function(num,index){
+        if(index != inner.length-1){
+          return num !== 0;
+        }
+          return true;
+      })){
+      lines.push(i);
+    }
     });
 
     if(lines.length !== 0){
@@ -259,20 +266,13 @@ class Tetromino{
       for(let i = 0; i < lines.length; i++){
         gridMemory[lines[i]] =[0,0,0,0,0,0,0,0,0,0,0];
       }
-      this.swapGridElements(gridMemory,lines[lines.length-1],lines.length);
+      for(let i = 0; i < lines.length; i++){
+      for(let j = 0; j < lines[0]; j++){
+        swapArrayElements(gridMemory,lines[0]-j,lines[0]-j-1);
+      }
+      lines.shift();
+    }
 
-      //Remove lines from shape and store
-      let toRemove = lines.length;
-      this.shape.forEach((temShape,i) => {
-        if(this.shape[i].includes(1)){
-          this.shape[i] = [0,0];
-          this.storePosition();
-        }
-      });
-
-      //Moves and stores new points
-      this.y += blockSize.y*2;
-      this.storePosition();
     }
 
   }
