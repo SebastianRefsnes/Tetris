@@ -1,7 +1,7 @@
 window.onload = startGame;
 canvas = document.getElementById("tetris")
 ctx = canvas.getContext("2d");
-frames = 60;
+frames = 30;
 grid = {x:10,y:20};
 blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y}
 floor = [canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height]
@@ -9,6 +9,7 @@ stored = [];
 gridMemory = [[]];
 lastTetromino = "";
 loopID = "";
+gameOver = false;
 
 function startGame(){
   tetromino = new Tetromino();
@@ -18,6 +19,7 @@ function startGame(){
   loopID = setInterval(game,1000/frames);
 }
 update = true;
+
 function game(){
 
   //Drawing background
@@ -45,29 +47,17 @@ function game(){
 
 
   //Getting new tetromino if needed
-  if(tetromino.focus === false){
-    //stored.push(tetromino);
+  if(!tetromino.focus){
     lastTetromino = tetromino;
     tetromino = new Tetromino();
   }
 
   //Checking if game should end
-  if(tetromino.y <= 0 && lastTetromino.y <= 0){
+  if(gameOver){
     clearInterval(loopID);
-    //stored = [];
     alert("Game over!")
     return;
   }
-
-  //Drawing old tetromino objects
-  // if(stored.length){
-  //   stored.forEach((tetrominos,i) => {
-  //     if(tetrominos.y === canvas.height || tetrominos.height <= 0){
-  //       stored.splice(i);
-  //     }
-  //         tetrominos.draw();
-  //   });
-  // }
 
   ctx.fillStyle = "white";
   ctx.strokeStyle = "white";
@@ -81,9 +71,9 @@ function game(){
     });
   });
 
-  tetromino.removeLines();
   tetromino.update();
-  tetromino.merge();
+  tetromino.collisionCheck();
+  tetromino.removeLines();
   tetromino.draw();
 
 }

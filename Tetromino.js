@@ -23,65 +23,43 @@ class Tetromino{
 
     switch(this.type){
       case "i":
-        this.shape = [[1,0],
-                      [1,0],
-                      [1,0],
-                      [1,0]];
+        this.restoreShape();
         this.color = "cyan";
         this.colorCode = 1;
         this.height = 4;
         break;
       case "o":
-      this.shape = [[0,0],
-                    [1,1],
-                    [1,1],
-                    [0,0]];
-
+      this.restoreShape();
       this.color = "yellow";
       this.height = 2;
       this.colorCode = 2;
         break;
       case "t":
-      this.shape = [[0,0],
-                    [0,1],
-                    [1,1],
-                    [0,1]];
+      this.restoreShape();
       this.color = "purple";
       this.height = 3;
       this.colorCode = 3;
         break;
       case "j":
-      this.shape = [[0,0],
-                    [0,1],
-                    [0,1],
-                    [1,1]];
+      this.restoreShape();
       this.color = "blue";
       this.height = 3;
       this.colorCode = 4;
         break;
       case "l":
-      this.shape = [[0,0],
-                    [1,0],
-                    [1,0],
-                    [1,1]];
+      this.restoreShape();
       this.color = "orange";
       this.height = 3;
       this.colorCode = 5;
           break;
       case "s":
-      this.shape = [[0,1],
-                    [1,1],
-                    [1,0],
-                    [0,0]];
+      this.restoreShape();
       this.color = "green";
       this.height = 3;
       this.colorCode = 6;
           break;
       case "z":
-      this.shape = [[1,0],
-                    [1,1],
-                    [0,1],
-                    [0,0]];
+      this.restoreShape();
       this.color = "red";
       this.height = 3;
       this.colorCode = 7;
@@ -90,8 +68,119 @@ class Tetromino{
 
   }
 
+  restoreShape(){
+    switch(this.type){
+      case "i":
+        this.shape = [[1,0],
+                      [1,0],
+                      [1,0],
+                      [1,0]];
+        break;
+      case "o":
+      this.shape = [[0,0],
+                    [1,1],
+                    [1,1],
+                    [0,0]];
+        break;
+      case "t":
+      this.shape = [[0,0],
+                    [0,1],
+                    [1,1],
+                    [0,1]];
+        break;
+      case "j":
+      this.shape = [[0,0],
+                    [0,1],
+                    [0,1],
+                    [1,1]];
+        break;
+      case "l":
+      this.shape = [[0,0],
+                    [1,0],
+                    [1,0],
+                    [1,1]];
+          break;
+      case "s":
+      this.shape = [[0,1],
+                    [1,1],
+                    [1,0],
+                    [0,0]];
+          break;
+      case "z":
+      this.shape = [[1,0],
+                    [1,1],
+                    [0,1],
+                    [0,0]];
+          break;
+    }
+  }
+
+  rotatedShape(){
+      switch(this.type){
+        case "i":
+          this.shape = [[1,1,1,1],
+                        [0,0,0,0]];
+          break;
+        case "o":
+        this.shape = [[0,0],
+                      [1,1],
+                      [1,1],
+                      [0,0]];
+          break;
+        case "t":
+        this.shape = [[0,0,1,0],
+                      [0,1,1,1]];
+          break;
+        case "j":
+        this.shape = [[0,1,0,0],
+                      [0,1,1,1]];
+          break;
+        case "l":
+        this.shape = [[0,1,1,1],
+                      [0,1,0,0]];
+            break;
+        case "s":
+        this.shape = [[0,1,1,0],
+                      [0,0,1,1]];
+            break;
+        case "z":
+        this.shape = [[1,0,1,1],
+                      [0,1,1,0]];
+            break;
+      }
+  }
+
 
   rotate(){
+    if (this.type === "o") return;
+    this.rotation += 90;
+    if(this.rotation == 360){
+      this.rotation = 0;
+    }
+    switch (this.rotation) {
+      case 0:
+      this.restoreShape();
+
+        break;
+        case 90:
+        this.rotatedShape();
+          break;
+          case 180:
+          this.restoreShape();
+          this.shape.forEach((shape,i) => {
+            swapArrayValues(this.shape[i],0,1)
+            });
+
+            break;
+            case 270:
+            this.rotatedShape();
+            //TODO: This is probably wrong
+            this.shape.forEach((shape,i) => {
+              swapArrayValues(this.shape[i],0,1)
+            });
+            break;
+
+    }
 
   }
 
@@ -164,8 +253,7 @@ class Tetromino{
       }
         if(input.up){
           if(now-this.start>500){
-            console.log(input);
-            this.y-=blockSize.y;
+            this.rotate();
             this.start = new Date();
           }
         }
@@ -181,73 +269,75 @@ class Tetromino{
       this.memory[i] =[0,0,0,0,0,0,0,0,0,0];
   }
   //Looping through shape
-  for(let i = 0; i < this.shape.length; i++){
-  //Left side
-  if(this.shape[i][0]===1){
-    this.memory[(this.y/blockSize.y)+i][this.x/blockSize.x] = this.colorCode;
+  this.shape.forEach((shape,i) => {
+  shape.forEach((innerShape,j) => {
+  //Storing complete shape to memory;
+  if(this.shape[i][j]===1){
+    this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+j] = this.colorCode;
   }
-  //Right side
-  if(this.shape[i][1]===1){
-    this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+1] = this.colorCode;
-  }
-}
+  });
+});
+
 }
 
   //Merge handles collision detection. Also removes focus if collision on y axis is detected.
-  merge(){
+  collisionCheck(){
+    if(!this.focus) return;
     let blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y};
     this.storePosition();
 
     //Collision check
+    let reverse = false;
 
-    this.shape.forEach((shape,i) => {
-
-      //Doing blank bottom check
-      if(this.type === "o" || this.type === "s" || this.type === "z"){
-        if (this.y+(blockSize.y*3)>= canvas.height){
-            this.focus = false;
-          }
-      } else if (this.y+(blockSize.y*4)>= canvas.height){
-          this.focus = false;
-        }
-
-        //Catching all other collision cases.
-        if(this.focus){
-        let reverse = false;
-        this.storePosition();
+        //Catching all falling collision cases with elevated floor.
         gridMemory.forEach((grd,i) => {
           grd.forEach((innerGrd, j) => {
-            let c = i;
             if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
               reverse = true;
             }
           });
         });
-        if(reverse){
-          this.focus = false;
-          this.y -= blockSize.y
-          console.log("merge")
-          this.storePosition();
-        }
-      }
 
-    //Finally, removing focus and storing memory to grid
-    if(!this.focus){
-      this.storePosition();
-      this.memory.forEach((tetMem, i) => {
-        for(let v = 0; v < 10; v++){
-          if(this.memory[i][v] !== 0){
-            gridMemory[i][v] = this.colorCode;
-          }
+        if(reverse){
+          this.y -= blockSize.y;
+          this.merge();
+          return;
         }
-      });
-    }
-  });
+
+        //Doing blank bottom check
+        //TODO: This most likely won't work with rotated shapes.
+        if(this.type === "o" || this.type === "s" || this.type === "z"){
+          if (this.y+(blockSize.y*3)>= canvas.height){
+              this.merge();
+              return;
+
+            }
+        } else if (this.y+(blockSize.y*4)>= canvas.height){
+            this.merge();
+            return;
+          }
 }
 
+//Merge removes focus and stores data to grid.
+  merge(){
+    if(!this.focus) return;
+    this.storePosition();
+    this.focus = false;
+    if(this.y <= 0){
+      gameOver = true;
+    }
+    this.memory.forEach((tetMem, i) => {
+      for(let v = 0; v < grid.x; v++){
+        if(this.memory[i][v] !== 0){
+          gridMemory[i][v] = this.colorCode;
+        }
+      }
+    });
+  }
+
   removeLines(){
+    //Detects full lines, then pushes those lines to an array
     let lines = [];
-    //THIS IS WRONG WITH COLORCODES, Need to use .every somehow
     gridMemory.forEach((inner,i) => {
       if(inner.every(function(num,index){
         if(index != inner.length-1){
@@ -258,53 +348,48 @@ class Tetromino{
       lines.push(i);
     }
     });
-
+    //Checking if any full lines have been detected
     if(lines.length !== 0){
-      console.log(lines)
+      console.log(lines);
 
-      //After this I have to swap the previous elements to simulate the grid memory "dropping down"
+      //Not sure why but despite using splice, the grid doesn't drop down.
       for(let i = 0; i < lines.length; i++){
-        gridMemory[lines[i]] =[0,0,0,0,0,0,0,0,0,0,0];
-      }
-      for(let i = 0; i < lines.length; i++){
-      for(let j = 0; j < lines[0]; j++){
-        swapArrayElements(gridMemory,lines[0]-j,lines[0]-j-1);
-      }
+      gridMemory.splice(lines[i],1);
+      gridMemory.unshift([0,0,0,0,0,0,0,0,0,0,0])
       lines.shift();
-    }
 
     }
+  }
+
+
 
   }
 
   draw(){
-    //TODO Change this so I get the right colors
+    if(!this.focus) return;
     ctx.fillStyle = this.color;
     ctx.strokeStyle = "white";
 
     //Drawing tetromino
     let blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y}
-    for(let i = 0; i < 4; i++){
 
-      if(this.shape[i][0]!==0){
-        ctx.fillRect(this.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
-        ctx.strokeRect(this.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
+      //This solution can draw any shape.
+      this.shape.forEach((shape,i) => {
+      shape.forEach((innerShape,j) => {
+      if(this.shape[i][j]!==0){
+        ctx.fillRect(this.x+(blockSize.x*j),this.y+(i*blockSize.y),blockSize.x,blockSize.y);
+        ctx.strokeRect(this.x+(blockSize.x*j),this.y+(i*blockSize.y),blockSize.x,blockSize.y);
+      }
+       });
+    });
 
       }
-       if(this.shape[i][1]!==0){
-        ctx.fillRect(this.x+blockSize.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
-        ctx.strokeRect(this.x+blockSize.x,this.y+(i*blockSize.y),blockSize.x,blockSize.y);
 
-      }
-
-
-    }
-  }
 
   randomType(){
    let result = '';
    let characters = 'iotjlsz';
-  //characters = "o";
+  // characters = "s";
    let charLength = characters.length;
    for ( let i = 0; i < 1; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charLength));

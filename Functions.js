@@ -26,10 +26,8 @@ function getColor(colorCode){
   return color;
 }
 
-function swapArrayElements(arr,a,b){
-  let tempA = a;
-  arr[a] = arr[b];
-  arr[b] = arr[tempA];
-  return arr;
-
-}
+  function swapArrayValues(arr,a,b){
+    let tempA = arr[a];
+    arr[a] = arr[b];
+    arr[b] = tempA;
+  }
