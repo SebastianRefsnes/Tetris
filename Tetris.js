@@ -14,7 +14,7 @@ gameOver = false;
 function startGame(){
   tetromino = new Tetromino();
   for(let i = 0; i < grid.y; i++){
-      gridMemory[i] =[0,0,0,0,0,0,0,0,0,0,0];
+    gridMemory[i] =[0,0,0,0,0,0,0,0,0,0,0];
   }
   loopID = setInterval(game,1000/frames);
 }
