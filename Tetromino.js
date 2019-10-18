@@ -71,43 +71,50 @@ class Tetromino{
   restoreShape(){
     switch(this.type){
       case "i":
-      this.shape = [[1,0],
+      this.shape = [
+      [1,0],
       [1,0],
       [1,0],
       [1,0]];
       break;
       case "o":
-      this.shape = [[0,0],
+      this.shape = [
+      [0,0],
       [1,1],
       [1,1],
       [0,0]];
       break;
       case "t":
-      this.shape = [[0,0],
+      this.shape = [
+      [0,0],
       [0,1],
       [1,1],
       [0,1]];
       break;
       case "j":
-      this.shape = [[0,0],
+      this.shape = [
+      [0,0],
       [0,1],
       [0,1],
       [1,1]];
       break;
       case "l":
-      this.shape = [[0,0],
+      this.shape = [
+      [0,0],
       [1,0],
       [1,0],
       [1,1]];
       break;
       case "s":
-      this.shape = [[0,1],
+      this.shape = [
+      [0,1],
       [1,1],
       [1,0],
       [0,0]];
       break;
       case "z":
-      this.shape = [[1,0],
+      this.shape = [
+      [1,0],
       [1,1],
       [0,1],
       [0,0]];
@@ -118,34 +125,41 @@ class Tetromino{
   rotatedShape(){
     switch(this.type){
       case "i":
-      this.shape = [[1,1,1,1],
+      this.shape = [
+      [1,1,1,1],
       [0,0,0,0]];
       break;
       case "o":
-      this.shape = [[0,0],
+      this.shape = [
+      [0,0],
       [1,1],
       [1,1],
       [0,0]];
       break;
       case "t":
-      this.shape = [[0,0,1,0],
-      [0,1,1,1]];
+      this.shape = [
+      [0,1,0,0],
+      [1,1,1,0]];
       break;
       case "j":
-      this.shape = [[0,1,0,0],
-      [0,1,1,1]];
+      this.shape = [
+      [1,0,0,0],
+      [1,1,1,0]];
       break;
       case "l":
-      this.shape = [[0,1,1,1],
-      [0,1,0,0]];
+      this.shape = [
+      [1,1,1,0],
+      [1,0,0,0]];
       break;
       case "s":
-      this.shape = [[0,1,1,0],
-      [0,0,1,1]];
+      this.shape = [
+      [1,1,0,0],
+      [0,1,1,0]];
       break;
       case "z":
-      this.shape = [[1,0,1,1],
-      [0,1,1,0]];
+      this.shape = [
+      [0,1,1,0],
+      [1,1,0,0]];
       break;
     }
   }
@@ -169,11 +183,9 @@ class Tetromino{
       this.shape.forEach((shape,i) => {
         swapArrayValues(this.shape[i],0,1)
       });
-
       break;
       case 270:
       this.rotatedShape();
-      //TODO: This is probably wrong
       this.shape.forEach((shape,i) => {
         swapArrayValues(this.shape,this.shape[0][i],this.shape[1][i])
       });
@@ -230,7 +242,7 @@ class Tetromino{
       }
     }
     //RIGHT
-    if(input.right && this.x != (blockSize.x*grid.x)-blockSize.x*(tetromino.type === "i" ?  1 : 2)){
+    if(input.right && this.x < (blockSize.x*grid.x)-blockSize.x*(tetromino.rotation === (90||270) ?  3 : 2)){
       if(now-this.start>50){
         let reverse = false;
         this.x+=blockSize.x;
@@ -382,7 +394,7 @@ class Tetromino{
   randomType(){
     let result = '';
     let characters = 'iotjlsz';
-    // characters = "s";
+    //characters = "io";
     let charLength = characters.length;
     for ( let i = 0; i < 1; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charLength));
