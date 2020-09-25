@@ -14,7 +14,7 @@ gameOver = false;
 function startGame(){
   tetromino = new Tetromino();
   for(let i = 0; i < grid.y; i++){
-    gridMemory[i] =[0,0,0,0,0,0,0,0,0,0,0];
+    gridMemory[i] = [-1,0,0,0,0,0,0,0,0,0,0,-1];
   }
   loopID = setInterval(game,1000/frames);
 }
@@ -55,7 +55,7 @@ function game(){
   //Checking if game should end
   if(gameOver){
     clearInterval(loopID);
-    alert("Game over!")
+    startGame();
     return;
   }
 
@@ -63,10 +63,10 @@ function game(){
   ctx.strokeStyle = "white";
   gridMemory.forEach((grd,i) => {
     grd.forEach((innerGrd,j) => {
-      if(gridMemory[i][j] !== 0){
-        ctx.fillStyle = getColor(gridMemory[i][j]);
-        ctx.fillRect(j*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
-        ctx.strokeRect(j*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
+      if(innerGrd != 0 && innerGrd != -1){
+        ctx.fillStyle = getColor(innerGrd);
+        ctx.fillRect((j-1)*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
+        ctx.strokeRect((j-1)*blockSize.x,i*blockSize.y,blockSize.x,blockSize.y);
       }
     });
   });

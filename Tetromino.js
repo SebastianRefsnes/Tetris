@@ -12,187 +12,156 @@ class Tetromino{
     this.start = new Date();
     this.gravityTimer = new Date();
     this.memory = [[]];
-    this.rotation = 0;
+    this.rotationIndex = 0;
 
     this.randomType();
 
-    for(let i = 0; i < grid.y; i++){
-      this.memory[i] =[0,0,0,0,0,0,0,0,0,0,0];
-    }
-
-
     switch(this.type){
       case "i":
-      this.restoreShape();
       this.color = "cyan";
       this.colorCode = 1;
       this.height = 4;
       break;
       case "o":
-      this.restoreShape();
       this.color = "yellow";
       this.height = 2;
       this.colorCode = 2;
       break;
       case "t":
-      this.restoreShape();
       this.color = "purple";
       this.height = 3;
       this.colorCode = 3;
       break;
       case "j":
-      this.restoreShape();
       this.color = "blue";
       this.height = 3;
       this.colorCode = 4;
       break;
       case "l":
-      this.restoreShape();
       this.color = "orange";
       this.height = 3;
       this.colorCode = 5;
       break;
       case "s":
-      this.restoreShape();
       this.color = "green";
       this.height = 3;
       this.colorCode = 6;
       break;
       case "z":
-      this.restoreShape();
       this.color = "red";
       this.height = 3;
       this.colorCode = 7;
       break;
     }
+    this.shape = this.getShapes()[0];
 
   }
 
-  restoreShape(){
+  getShapes(){
     switch(this.type){
       case "i":
-      this.shape = [
-      [1,0],
-      [1,0],
-      [1,0],
-      [1,0]];
-      break;
+      return [
+        [
+          [0,1],
+          [0,1],
+          [0,1],
+          [0,1]
+        ],[
+          [0,0,0,0],
+          [1,1,1,1]
+        ]
+      ];
       case "o":
-      this.shape = [
+      return [[
       [0,0],
       [1,1],
       [1,1],
-      [0,0]];
-      break;
+      [0,0]]];
       case "t":
-      this.shape = [
-      [0,0],
-      [0,1],
-      [1,1],
-      [0,1]];
-      break;
+        return [
+          [
+            [0,0],
+            [0,1],
+            [1,1],
+            [0,1]
+          ],[
+            [0,1,0,0],
+            [1,1,1,0]
+          ],[
+            [0,0],
+            [1,0],
+            [1,1],
+            [1,0]
+          ],
+          [
+            [1,1,1,0],
+            [0,1,0,0]
+          ]
+        ];
       case "j":
-      this.shape = [
-      [0,0],
-      [0,1],
-      [0,1],
-      [1,1]];
-      break;
+        return [
+          [
+            [0,0],
+            [1,1],
+            [1,0],
+            [1,0]
+          ],[
+            [0,1,1,1],
+            [0,0,0,1]
+          ],
+          [
+            [0,1,0,0],
+            [0,1,1,1]
+          ]
+        ];
       case "l":
-      this.shape = [
-      [0,0],
-      [1,0],
-      [1,0],
-      [1,1]];
-      break;
+        return [
+          [
+            [0,0],
+            [1,1],
+            [0,1],
+            [0,1]
+          ],[
+            [0,1,1,1],
+            [0,1,0,0]
+          ],
+          [
+            [0,0,0,1],
+            [0,1,1,1]
+          ]
+        ];
       case "s":
-      this.shape = [
-      [0,1],
-      [1,1],
-      [1,0],
-      [0,0]];
-      break;
+        return [
+          [
+            [0,0],
+            [1,0],
+            [1,1],
+            [0,1]
+          ],[
+            [0,0,1,1],
+            [0,1,1,0]
+          ]
+        ];
       case "z":
-      this.shape = [
-      [1,0],
-      [1,1],
-      [0,1],
-      [0,0]];
-      break;
+        return [
+          [
+            [0,0],
+            [0,1],
+            [1,1],
+            [1,0]
+          ],[
+            [0,1,1,0],
+            [0,0,1,1]
+          ]
+        ];
     }
   }
-
-  rotatedShape(){
-    switch(this.type){
-      case "i":
-      this.shape = [
-      [1,1,1,1],
-      [0,0,0,0]];
-      break;
-      case "o":
-      this.shape = [
-      [0,0],
-      [1,1],
-      [1,1],
-      [0,0]];
-      break;
-      case "t":
-      this.shape = [
-      [0,1,0,0],
-      [1,1,1,0]];
-      break;
-      case "j":
-      this.shape = [
-      [1,0,0,0],
-      [1,1,1,0]];
-      break;
-      case "l":
-      this.shape = [
-      [1,1,1,0],
-      [1,0,0,0]];
-      break;
-      case "s":
-      this.shape = [
-      [1,1,0,0],
-      [0,1,1,0]];
-      break;
-      case "z":
-      this.shape = [
-      [0,1,1,0],
-      [1,1,0,0]];
-      break;
-    }
-  }
-
 
   rotate(){
-    if (this.type === "o") return;
-    this.rotation += 90;
-    if(this.rotation == 360){
-      this.rotation = 0;
-    }
-    switch (this.rotation) {
-      case 0:
-      this.restoreShape();
-      break;
-      case 90:
-      this.rotatedShape();
-      break;
-      case 180:
-      this.restoreShape();
-      this.shape.forEach((shape,i) => {
-        swapArrayValues(this.shape[i],0,1)
-      });
-      break;
-      case 270:
-      this.rotatedShape();
-      this.shape.forEach((shape,i) => {
-        swapArrayValues(this.shape,this.shape[0][i],this.shape[1][i])
-      });
-      break;
-
-    }
-
+    this.rotationIndex++;
+    let shapeOptions = this.getShapes();
+    if(this.rotationIndex > shapeOptions.length-1) this.rotationIndex = 0;
+    this.shape = shapeOptions[this.rotationIndex];
   }
 
   update(){
@@ -222,43 +191,56 @@ class Tetromino{
 
     //Move tetromino along x axis
     //LEFT
-    if(input.left && this.x != 0){
+    if(input.left){
       if(now-this.start>50){
+        let reverse = false;
+        this.storePosition();
+        for(let i = 0; i < gridMemory.length; i++){
+          if(this.memory[i][0] !== 0){
+            reverse = true;
+          }
+        }
         this.x-=blockSize.x;
         this.storePosition();
-        let reverse = false;
-        gridMemory.forEach((grd,i) => {
-          grd.forEach((innerGrd, j) => {
-            if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
+        for(let i = 0; i < gridMemory.length; i++){
+          for(let j = 1; j < gridMemory[0].length-1; j++){
+            if(gridMemory[i][j] !== 0 && this.memory[i][j-1] !== 0){
               reverse = true;
             }
-          });
-        });
+          }
+        }
         if(reverse){
           this.x += blockSize.x;
           reverse = false;
         }
+        this.storePosition();
         this.start = new Date();
       }
     }
     //RIGHT
-    if(input.right && this.x < (blockSize.x*grid.x)-blockSize.x*(tetromino.rotation === (90||270) ?  3 : 2)){
+    if(input.right){
       if(now-this.start>50){
         let reverse = false;
-        this.x+=blockSize.x;
         this.storePosition();
-        gridMemory.forEach((grd,i) => {
-          grd.forEach((innerGrd, j) => {
-            if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
+        for(let i = 0; i < gridMemory.length; i++){
+          if(this.memory[i][this.memory[i].length-1] !== 0){
+            reverse = true;
+          }
+        }
+        this.x += blockSize.x;
+        this.storePosition();
+        for(let i = 0; i < gridMemory.length; i++){
+          for(let j = 1; j < gridMemory[0].length-1; j++){
+            if(gridMemory[i][j] !== 0 && this.memory[i][j-1] !== 0){
               reverse = true;
             }
-          });
-        });
+          }
+        }
         if(reverse){
           this.x -= blockSize.x;
           reverse = false;
         }
-
+        this.storePosition();
         this.start = new Date();
       }
     }
@@ -277,14 +259,19 @@ class Tetromino{
 
     //Clear
     for(let i = 0; i < (grid.y); i++){
-      this.memory[i] =[0,0,0,0,0,0,0,0,0,0];
+      this.memory[i] = [0,0,0,0,0,0,0,0,0,0];
     }
     //Looping through shape
     this.shape.forEach((shape,i) => {
       shape.forEach((innerShape,j) => {
         //Storing complete shape to memory;
-        if(this.shape[i][j]===1){
-          this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+j] = this.colorCode;
+        if(innerShape===1){
+          try {
+            this.memory[(this.y/blockSize.y)+i][(this.x/blockSize.x)+j] = this.colorCode;
+
+          } catch (error) {
+            
+          }
         }
       });
     });
@@ -298,13 +285,13 @@ class Tetromino{
     let reverse = false;
 
     //Catching all falling collision cases with elevated floor.
-    gridMemory.forEach((grd,i) => {
-      grd.forEach((innerGrd, j) => {
-        if(this.memory[i][j] !== 0 && gridMemory[i][j] !== 0){
+    for(let i = 0; i < gridMemory.length; i++){
+      for(let j = 1; j < gridMemory[i].length-1; j++){
+        if(this.memory[i][j-1] !== 0 && gridMemory[i][j] !== 0){
           reverse = true;
         }
-      });
-    });
+      }
+    }
 
     if(reverse){
       this.y -= blockSize.y;
@@ -313,14 +300,12 @@ class Tetromino{
     }
 
     //Checking for collision with floor
-    gridMemory[gridMemory.length-1].forEach((btmGrid,i) => {
-      if(i !== 10){
-      if(this.memory[gridMemory.length-1][i] !== 0 && gridMemory[gridMemory.length-1][i] === 0){
+    for(let i = 0; i < this.memory[this.memory.length-1].length; i++){
+      if(this.memory[this.memory.length-1][i] !== 0){
         this.merge();
         return;
       }
     }
-    });
   }
 
   //Merge removes focus and stores data to grid.
@@ -332,11 +317,13 @@ class Tetromino{
       gameOver = true;
     }
     this.memory.forEach((tetMem, i) => {
-      for(let v = 0; v < grid.x; v++){
-        if(this.memory[i][v] !== 0){
-          gridMemory[i][v] = this.colorCode;
+      tetMem.forEach((val, j) => {
+        if(val !== 0){
+          if(j+1 == 10){
+          }
+          gridMemory[i][j+1] = val;
         }
-      }
+      });
     });
   }
 
@@ -345,7 +332,7 @@ class Tetromino{
     let lines = [];
     gridMemory.forEach((inner,i) => {
       if(inner.every(function(num,index){
-        if(index != inner.length-1){
+        if(index != inner.length-1 && index != 0){
           return num !== 0;
         }
         return true;
@@ -355,19 +342,15 @@ class Tetromino{
     });
     //Checking if any full lines have been detected
     if(lines.length !== 0){
-      console.log(lines);
 
       //Not sure why but despite using splice, the grid doesn't drop down.
       for(let i = 0; i < lines.length; i++){
         gridMemory.splice(lines[i],1);
-        gridMemory.unshift([0,0,0,0,0,0,0,0,0,0,0])
+        gridMemory.unshift([-1,0,0,0,0,0,0,0,0,0,-1]);
         lines.shift();
 
       }
     }
-
-
-
   }
 
   draw(){
@@ -387,7 +370,6 @@ class Tetromino{
         }
       });
     });
-
   }
 
 
