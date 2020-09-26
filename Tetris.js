@@ -1,17 +1,19 @@
 window.onload = startGame;
-canvas = document.getElementById("tetris")
-ctx = canvas.getContext("2d");
-frames = 30;
-grid = {x:10,y:20};
-blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y}
-floor = [canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height,canvas.height]
-stored = [];
-gridMemory = [[]];
-lastTetromino = "";
-loopID = "";
-gameOver = false;
+let canvas, context, blockSize;
+let frames = 30;
+let grid = {x:10,y:20};
+let stored = [];
+let gridMemory = [[]];
+let lastTetromino = "", loopID = "";
+let gameOver = false, firstTime = true;
 
 function startGame(){
+  if(firstTime){
+    canvas = document.getElementById("tetris");
+    ctx = canvas.getContext("2d");
+    blockSize = {x:canvas.width/grid.x, y: canvas.height/grid.y}
+    firstTime = false;
+  }
   tetromino = new Tetromino();
   for(let i = 0; i < grid.y; i++){
     gridMemory[i] = [-1,0,0,0,0,0,0,0,0,0,0,-1];
